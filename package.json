@@ -2,9 +2,10 @@
   "name": "roadbuddyapp",
   "version": "1.0.0",
   "description": "Road Buddy Application",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server",
+    "server": "nodemon server"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,14 @@
   },
   "homepage": "https://github.com/calcantara35/RoadBuddy#readme",
   "dependencies": {
-    "axios": "^0.19.0"
+    "axios": "^0.19.0",
+    "bcryptjs": "^2.4.3",
+    "config": "^3.2.4",
+    "express": "^4.17.1",
+    "express-validator": "^6.3.0",
+    "mongoose": "^5.7.13"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
   }
 }
