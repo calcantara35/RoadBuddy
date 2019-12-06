@@ -26,6 +26,13 @@ server.get("/", (req, res) => {
   res.send("API Data");
 });
 
+// define routes
+// this is bringing in the users.js file that has all the user routes
+server.use("/api/users", require("./routes/api/users"));
+server.use("/api/auth", require("./routes/api/auth"));
+server.use("/api/profile", require("./routes/api/profile"));
+server.use("/api/reports", require("./routes/api/reports"));
+
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () => console.log(`Server started on port ${PORT}`));
