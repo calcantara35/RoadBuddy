@@ -8,16 +8,20 @@ const ProfileSchema = new mongoose.Schema({
     ref: "user"
   },
   address: {
-    type: String
+    type: String,
+    required: true
   },
   city: {
-    type: String
+    type: String,
+    required: true
   },
   state: {
-    type: String
+    type: String,
+    required: true
   },
   zipcode: {
-    type: String
+    type: String,
+    required: true
   },
   bio: {
     type: String
@@ -38,4 +42,5 @@ const ProfileSchema = new mongoose.Schema({
   }
 });
 
+// exporting and compling Profile schema into a model
 module.exports = Profile = mongoose.model("profile", ProfileSchema);
