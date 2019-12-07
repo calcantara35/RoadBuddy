@@ -22,6 +22,9 @@ const server = express();
 //connect Database
 connectDB();
 
+// init middleware | lets us get the data in req.body
+server.use(express.json({ extended: false }));
+
 server.get("/", (req, res) => {
   res.send("API Data");
 });

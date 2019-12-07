@@ -9,10 +9,11 @@ const db = config.get("mongoURI");
 const connectDB = async () => {
   try {
     // this begins the DB connection. "mongoose.connect(db)" returns a promise so you put await before it
-    // reason for useNewUrlParser and useUnifiedTopology is because without them you get a deprecation wanring. MongoDB standard
+    // reason for useNewUrlParser, useUnifiedTopology, useCreateIndex is because without them you get a deprecation wanring. MongoDB standard
     await mongoose.connect(db, {
       useNewUrlParser: true,
-      useUnifiedTopology: true
+      useUnifiedTopology: true,
+      useCreateIndex: true
     });
     console.log("MongoDB Connected");
   } catch (err) {
