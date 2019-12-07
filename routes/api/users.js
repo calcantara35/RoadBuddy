@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
+const jwt = require("jsonwebtoken");
+const config = require("config");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 
@@ -28,7 +30,7 @@ router.post(
       min: 6
     })
   ],
-  //using async await
+  //using async await | everything below is logic for post method register user
   async (req, res) => {
     // checking to see if the credientials were valid
     const errors = validationResult(req);
@@ -72,7 +74,7 @@ router.post(
       // create a salt to hash it using bcrypt.genSalt(pass in rounds, more rounds you have the better, security and speed reasons, based on documentation). Also it returns a promise so using async await
       const salt = await bcrypt.genSalt(10);
 
-      // take user password and hash it
+      // take user password and hash it(takes in password and the salt created from above)
       user.password = await bcrypt.hash(password, salt);
 
       //save user to db
@@ -80,7 +82,24 @@ router.post(
 
       // return json web token (user gets logged in right away)
 
-      res.send("User registered");
+      // payload is what we are sending to the jwt
+      const payload = {
+        subject: {
+          // do not have to do _id because mongoose uses an abstraction of _id
+          id: user.id
+        }
+      };
+
+      // needs payload | secret(put in default.json file) | options: expiresIn (format in ms), callback(possible err and the jwtToken)
+      jwt.sign(
+        payload,
+        config.get("jwtSecret"),
+        { expiresIn: 360000 },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
