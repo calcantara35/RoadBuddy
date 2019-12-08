@@ -121,4 +121,69 @@ router.post(
   }
 );
 
+// @route   GET api/profile
+// @desc    Get all profiles
+// @access  Public
+router.get("/", async (req, res) => {
+  try {
+    // accesses Profile Module and populates the query with the User model's name and avatar properties
+    const profiles = await Profile.find().populate("user", ["name", "avatar"]);
+
+    // returns profiles in json format
+    res.json(profiles);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   GET api/profile/user/:user_id
+// @desc    Get profile by user id
+// @access  Public
+router.get("/user/:user_id", async (req, res) => {
+  try {
+    // accesses Profile Module and populates the query with the User model's name and avatar properties
+    const profile = await Profile.findOne({
+      user: req.params.user_id
+    }).populate("user", ["name", "avatar"]);
+
+    if (!profile) {
+      return res.status(400).json({ msg: "Profile not found!" });
+    }
+
+    // returns profiles in json format
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    // check for a certain type of message
+    if (err.kind === "ObjectId") {
+      return res.status(400).json({ msg: "Profile not found!" });
+    }
+    res.status(500).send("Server Error");
+  }
+});
+
+// @route   DELETE api/profile/user/:user_id
+// @desc    Delete profile, user, & post
+// @access  Private
+router.delete("/", auth_middleware, async (req, res) => {
+  try {
+    // remove profile | using the middleware we can get the user's id from the req.user
+    await Profile.findOneAndRemove({ user: req.user.id });
+
+    // remove user
+    await User.findOneAndRemove({ _id: req.user.id });
+
+    // returns profiles in json format
+    res.json({ msg: "User deleted" });
+  } catch (err) {
+    console.error(err.message);
+    // check for a certain type of message
+    if (err.kind === "ObjectId") {
+      return res.status(400).json({ msg: "Profile not found!" });
+    }
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = router;
