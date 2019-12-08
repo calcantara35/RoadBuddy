@@ -236,4 +236,100 @@ router.put("/unlike/:id", auth_middleware, async (req, res) => {
   }
 });
 
+// @route   PUT api/reports/comment/:id
+// @desc    Update User report based on id for comments
+// @access  Private
+router.put(
+  "/comment/:id",
+  [
+    auth_middleware,
+    [
+      //checking
+      check("text", "Description is required")
+        .not()
+        .isEmpty()
+      // check("img", "Please upload an image showcasing the road condition")
+    ]
+    // upload.single("img")
+  ],
+  async (req, res) => {
+    // errors array
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    // end of errors array logic
+
+    try {
+      // we are logged in (since its  private route) so we can find user by id | we go into the User's model and grab the one based on req.user.id
+      const user = await User.findById(req.user.id).select("-password");
+
+      // get report by id
+      const report = await Reports.findById(req.params.id);
+
+      // var for new report
+      const newComment = {
+        text: req.body.text,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        avatar: user.avatar,
+        user: req.user.id
+      };
+
+      report.comments.unshift(newComment);
+
+      // save to db
+      await report.save();
+
+      // send db data in json format to client
+      res.json(report.comments);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
+// @route   DELETE api/reports/comment/:id/:comment_id
+// @desc    Delete a comment based on user id and comment id
+// @access  Private
+router.delete("/comment/:id/:comment_id", auth_middleware, async (req, res) => {
+  try {
+    // get report by id
+    const report = await Reports.findById(req.params.id);
+
+    // pull out comment from report
+    const comment = report.comments.find(
+      comment => comment.id === req.params.comment_id
+    );
+
+    // make sure comment exists
+    if (!comment) {
+      return res.status(404).json({ msg: "Comment does not exist" });
+    }
+
+    // make sure the user who is deleting the comment made the comment
+    if (comment.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: "User not authorized" });
+    }
+
+    // get removed index | gets correct like to remove
+    const removeIndex = report.comments
+      .map(comment => comment.user.toString())
+      .indexOf(req.user.id);
+
+    // splice out of comments array
+    report.comments.splice(removeIndex, 1);
+
+    // saving to db
+    await report.save();
+
+    // sending the array of comments back into json
+    res.json(report.comments);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = router;
