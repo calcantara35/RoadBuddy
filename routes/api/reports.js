@@ -91,7 +91,7 @@ router.post(
   }
 );
 
-// @route   GET api/reports
+// @route   GET axios.get(http://localhost:5000/api/reports)
 // @desc    Get all reports
 // @access  Private
 router.get("/", auth_middleware, async (req, res) => {

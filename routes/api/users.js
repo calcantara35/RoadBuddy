@@ -82,6 +82,7 @@ router.post(
 
       // return json web token (user gets logged in right away)
 
+      //JWT
       // payload is what we are sending to the jwt
       const payload = {
         subject: {
