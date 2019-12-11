@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 //connect this component with redux
 import { connect } from "react-redux";
@@ -11,7 +11,7 @@ import { register } from "../../actions/auth";
 // bring in proptypes
 import PropTypes from "prop-types";
 
-const Register = ({ setAlert, register }) => {
+const Register = ({ setAlert, register, isAuthenticated }) => {
   // 1) bring in useState | taking care of form state | [state, action]
   const [userFormData, setUserFormData] = useState({
     //  default values
@@ -51,6 +51,10 @@ const Register = ({ setAlert, register }) => {
       register({ first_name, last_name, email, password });
     }
   };
+
+  if (isAuthenticated) {
+    return <Redirect to="/timeline" />;
+  }
 
   return (
     <Fragment>
@@ -120,7 +124,15 @@ const Register = ({ setAlert, register }) => {
 // these actions get passed in as props, so this step is required
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
-  register: PropTypes.func.isRequired
+  register: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
 };
 
-export default connect(null, { setAlert, register })(Register);
+// bringing in auth state to specific component
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+// https://react-redux.js.org/using-react-redux/connect-mapdispatch
+// this is how components can access the store, by using connect
+export default connect(mapStateToProps, { setAlert, register })(Register);

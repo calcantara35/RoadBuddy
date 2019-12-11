@@ -1,8 +1,12 @@
 import React, { Fragment, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
 
-const Login = () => {
-  // 1) bring in useState | taking care of form state | [state, action]
+import PropTypes from "prop-types";
+import { login } from "../../actions/auth";
+
+const Login = ({ login, isAuthenticated }) => {
+  // 1) bring in useState | taking care of form state | [state, action] | component level state, NOT app level
   const [loginFormData, setLogin] = useState({
     //  default values
     email: "",
@@ -26,8 +30,13 @@ const Login = () => {
   const onSubmit = async e => {
     // if this isnt here it will act as we are submitting a file
     e.preventDefault();
-    console.log("success");
+    login(email, password);
   };
+
+  // redirect if login was successful
+  if (isAuthenticated) {
+    return <Redirect to="/timeline" />;
+  }
 
   return (
     <Fragment>
@@ -64,4 +73,15 @@ const Login = () => {
   );
 };
 
-export default Login;
+Login.propTypes = {
+  // actions
+  login: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
+};
+
+// bringing in auth state to specific component
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { login })(Login);
