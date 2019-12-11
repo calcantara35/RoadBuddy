@@ -1,6 +1,5 @@
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 
 // bring in proptypes
 import PropTypes from "prop-types";
@@ -48,32 +47,8 @@ const Register = ({ setAlert }) => {
       // this will send a msg and alertType to actions and use method
       setAlert("Passwords do not match. Please try again.", "danger");
     } else {
-      // creating an instance of a new user with the form data
-      const newUser = {
-        first_name,
-        last_name,
-        email,
-        password
-      };
-      try {
-        // we need this config object to pass in the headers
-        // this is used within axios, it is one of the params you can send
-        const config = {
-          headers: {
-            "Content-Type": "application/json"
-          }
-        };
-
-        // for the req, body that will have stringified the newUser object
-        const body = JSON.stringify(newUser);
-
-        //getting the response | can do /api/users because we added proxy in package.json file | pass in body and config
-        const res = await axios.post("/api/users", body, config);
-        // returns token
-        console.log(res.data);
-      } catch (err) {
-        if (err) throw err;
-      }
+      // putting the register user action
+      console.log("Success!");
     }
   };
 
