@@ -10,6 +10,7 @@ export const register = ({
   email,
   password
 }) => async dispatch => {
+  // instance of new user
   const newUser = {
     first_name,
     last_name,
