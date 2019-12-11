@@ -14,10 +14,14 @@ once your master branch is updated, do the following steps:
 //bring in express
 const express = require("express");
 
+const cors = require("cors");
+
 // bringing in connectDB method from db.js
 const connectDB = require("./config/db");
 
 const server = express();
+
+server.use(cors());
 
 //connect Database
 connectDB();
