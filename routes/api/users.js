@@ -36,7 +36,7 @@ router.post(
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       // you MUST add a return statement to avoid header errors since this is not the last res method
-      return res.status(400).json({ erros: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     //destructure
