@@ -5,6 +5,8 @@ import Landing from "./components/layout/Landing";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import Alert from "./components/layout/Alert";
+import Dashboard from "./components/dashboard/Dashboard";
+import PrivateRoute from "./components/routing/PrivateRoute";
 
 // redux store
 import { Provider } from "react-redux";
@@ -44,9 +46,14 @@ const App = () => {
           {/* Section here with class name of conatiner because of style purposes */}
           <section className="container">
             <Alert />
+            {/* switch makes it easier for private routes */}
+            {/* A <Switch> looks through its children <Route>s and
+            renders the first one that matches the current URL. */}
+            {/* https://reacttraining.com/react-router/web/guides/quick-start */}
             <Switch>
               <Route exact path="/login" component={Login} />
               <Route exact path="/register" component={Register} />
+              <PrivateRoute exact path="/dashboard" component={Dashboard} />
             </Switch>
           </section>
         </Fragment>
